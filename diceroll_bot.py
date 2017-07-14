@@ -24,6 +24,7 @@ def get_roll(dice_str, rng=random.SystemRandom()):
 
     :return: A space-separated list of all the dice rolled, preceded by the original dice string
     """
+
     match = re.match(r'^(\d+)d(\d+)([+-]\d+)?$', dice_str)
     if match:
         result = []
@@ -53,16 +54,25 @@ async def on_ready():
 async def on_message(message):
     try:
         command, *args = message.content.split()
-        if command == '!roll':
+        if command == '!help':
+            #
+            # !help
+            #
+            pass
+        elif command == '!roll':
+            #
+            # !roll
+            #
             rng = random.SystemRandom()
             dice_list = args
-            response_format = "{0.mention} rolled {1}."
+            response_format = "{0.mention} rolled:\n{1}"
             error_response_format = "Error: {0.mention} provided invalid dice. Valid format is <x>d<y>[(+|-)<z>]."
             if len(dice_list) == 0:
-                await client.send_message(message.channel, response_format.format(message.author, rng.randint(1, 20)))
+                output = "**1d20**: " + str(rng.randint(1, 20))
+                await client.send_message(message.channel, response_format.format(message.author, output))
             else:
                 try:
-                    output = ", ".join(map(get_roll, dice_list))
+                    output = "\n".join(map(get_roll, dice_list))
                     await client.send_message(message.channel, response_format.format(message.author, output))
                 except InputError:
                     await client.send_message(message.channel, error_response_format.format(message.author))
