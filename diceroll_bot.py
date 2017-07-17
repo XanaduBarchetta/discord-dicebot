@@ -111,7 +111,7 @@ async def on_ready():
 async def on_message(message):
     try:
         command, *args = message.content.split()
-        if command == '!help':
+        if command == '!roll-help':
             #
             # !help
             #
@@ -123,9 +123,9 @@ async def on_message(message):
             rng = random.SystemRandom()
             if len(args) > MAXIMUM_DICE_ARGS:
                 # Let the author know that only the first MAXIMUM_DICE_ARGS dice were considered
-                message = "Attn. {0.mention}: maximum dice arguments is {1}. Proceeding with first {1} " \
-                          "arguments...".format(message.author, MAXIMUM_DICE_ARGS)
-                client.send_message(message.channel, message)
+                output = "Warning {0.mention}: maximum dice arguments is {1}. Proceeding with first {1} " \
+                         "arguments...".format(message.author, MAXIMUM_DICE_ARGS)
+                await client.send_message(message.channel, output)
             dice_list = args[:MAXIMUM_DICE_ARGS]
             response_format = "{0.mention} rolled:\n{1}"
             roll_format = "**{0}**: {1}"
@@ -154,6 +154,7 @@ async def on_message(message):
                                                                "attempting to communicate with the server.".
                                               format(message.author))
                 # TODO: catch all other exceptions and log to file
+                # TODO: Add "try !roll-help" to end of every error message
     except ValueError:
         # Empty message. Do nothing
         pass
